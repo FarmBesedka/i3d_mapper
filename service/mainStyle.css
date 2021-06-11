@@ -1,0 +1,81 @@
+@font-face {
+	font-family: 'Montserrat-Regular';
+	src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+:root {
+	--dark: #1c1c1c;
+	--orange: #fea71c;
+	--light: #e5e5e5;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background-color: var(--dark);
+	color: var(--light);
+	font-family: 'Montserrat-Regular';
+	cursor: default;
+}
+
+#mainContent {
+	box-sizing: border-box;
+	padding: 5%;
+	width: 100%;
+}
+
+#header {
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: 5%;
+	font-size: 35pt;
+	text-align: center;
+}
+
+#openMod {
+	display: none;
+}
+
+#modPath {
+	font-family: inherit;
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: 2%;
+	padding: 2%;
+	color: var(--light);
+	background-color: var(--dark);
+	border: 1px solid var(--light);
+	outline: none;
+}
+
+#openModLabel {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 1%;
+	margin-bottom: 5%;
+	color: var(--orange);
+	border: 1px solid var(--orange);
+	font-size: 8pt;
+	text-align: center;
+}
+
+#go {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 5%;
+	text-align: center;
+	color: var(--orange);
+	border: 1px solid var(--orange);
+}
+
+#go:hover,
+#openModLabel:hover {
+	color: var(--light);
+	border: 1px solid var(--light);
+}
+
+#modPath:focus {
+	color: var(--orange);
+	border: 1px solid var(--orange);
+}

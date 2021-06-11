@@ -1,0 +1,18 @@
+{
+	"name": "nukopis",
+	"version": "1.0.0",
+	"description": "",
+	"main": "./service/main.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "electron ."
+	},
+	"author": "Кирилл",
+	"license": "ISC",
+	"devDependencies": {
+		"electron": "^13.1.1"
+	},
+	"dependencies": {
+		"xmlbuilder2": "^2.4.1"
+	}
+}
