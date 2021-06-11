@@ -5,14 +5,16 @@
 	"main": "./service/main.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "electron ."
+		"start": "electron .",
+		"build": "electron-packager . i3d_mapper --platform=win32 --arch=ia32 --out=release --ignore=release --icon=service/favicon.ico --prune --asar --overwrite"
 	},
 	"author": "Кирилл",
 	"license": "ISC",
 	"devDependencies": {
-		"electron": "^13.1.1"
+		"electron": "^13.1.2"
 	},
 	"dependencies": {
+		"electron-packager": "^15.2.0",
 		"xmlbuilder2": "^2.4.1"
 	}
 }

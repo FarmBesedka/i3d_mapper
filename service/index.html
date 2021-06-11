@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>I3D mapping</title>
-		<link rel="stylesheet" href="mainStyle.css" />
-		<script>
-			window.$ = window.jQuery = require('../service/jquery-3.6.0.min.js');
-			const fs = require('fs');
-			const parser = new DOMParser();
-			const s = new XMLSerializer();
-			const { create } = require('xmlbuilder2');
-		</script>
-		<script src="../mapper/loadMod.js"></script>
-	</head>
 
-	<body>
-		<div id="mainContent">
-			<div id="header">I3D MAPPING</div>
-			<input type="text" id="modPath" />
-			<label for="openMod" id="openModLabel">MODDESC.XML</label>
-			<input type="file" id="openMod" />
-			<div id="go">ПОЕХАЛИ!</div>
-		</div>
-	</body>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I3D mapping</title>
+  <link rel="stylesheet" href="mainStyle.css" />
+  <script>
+    window.$ = window.jQuery = require('../service/jquery-3.6.0.min.js');
+    const fs = require('fs');
+    const parser = new DOMParser();
+    const s = new XMLSerializer();
+    const {
+      create
+    } = require('xmlbuilder2');
+		var fullUpdate = false;
+  </script>
+  <script src="../mapper/loadMod.js"></script>
+</head>
+
+<body>
+  <div id="mainContent">
+    <div id="header">I3D MAPPING</div>
+    <input type="text" id="modPath" disabled placeholder="Путь к папке с модом"/>
+    <label for="openMod" id="openModLabel">MODDESC.XML</label>
+    <input type="file" id="openMod" />
+    <div id="fullUpdate">Обновить имена объектов</div>
+    <div id="go">ПОЕХАЛИ!</div>
+		<div id="ready">ГОТОВО!</div>
+  </div>
+</body>
+
 </html>
