@@ -1,20 +1,32 @@
 {
-	"name": "nukopis",
+	"name": "i3d_mapper",
 	"version": "1.0.0",
 	"description": "",
 	"main": "./service/main.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "electron .",
+		"dist": "electron-builder",
 		"build": "electron-packager . i3d_mapper --platform=win32 --arch=ia32 --out=release --ignore=release --icon=service/favicon.ico --prune --asar --overwrite"
 	},
 	"author": "Кирилл",
 	"license": "ISC",
 	"devDependencies": {
-		"electron": "^13.1.2"
+		"electron": "^13.1.2",
+		"electron-builder": "^22.11.7"
 	},
 	"dependencies": {
-		"electron-packager": "^15.2.0",
-		"xmlbuilder2": "^2.4.1"
-	}
+		"xmlbuilder2": "^2.4.1",
+		"electron-packager": "^15.2.0"
+	},
+	"build": {
+    "appId": "com.electron.app",
+    "win": {
+      "target": "portable"
+    },
+    "portable": {
+      "unicode": false,
+      "artifactName": "i3d_mapper.exe"
+    }
+  }
 }
