@@ -6,7 +6,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 function creteWindow() {
   const win = new BrowserWindow({
     width: 400,
-    height: 600,
+    height: 300,
     icon: iconFile,
     resizable: false,
     webPreferences: {

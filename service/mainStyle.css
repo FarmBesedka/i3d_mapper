@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Montserrat-Regular';
-  src: url('../fonts/Montserrat-Regular.ttf');
+  font-family: 'Inconsolata-Medium.ttf', monospace;
+  src: url('../fonts/Inconsolata-Medium.ttf');
 }
 
 :root {
@@ -8,86 +8,68 @@
   --orange: #fea71c;
   --light: #e5e5e5;
   --green: #00f04c;
+  --font: 'Inconsolata-Medium.ttf', monospace;
 }
 
 body {
   margin: 0;
-  padding: 0;
+  padding: 10px;
   background-color: var(--dark);
-  color: var(--light);
-  font-family: 'Montserrat-Regular';
+  color: var(--orange);
+  font-family: var(--font);
   cursor: default;
+  text-align: center;
   -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
 
-#mainContent {
-  box-sizing: border-box;
-  padding: 5%;
-  width: 100%;
-}
-
-#header {
+.headerGreen,
+.header {
   box-sizing: border-box;
   width: 100%;
-  margin-bottom: 5%;
-  font-size: 25pt;
-  text-align: center;
-  color: var(--orange);
+  margin-bottom: 10px;
+  font-size: 40px;
 }
 
-#openMod {
-  display: none;
-}
-
-#modPath {
-  font-family: inherit;
-  box-sizing: border-box;
-  width: 100%;
-  margin-bottom: 1%;
-  padding: 2%;
-  color: var(--light);
-  background-color: var(--dark);
-  border: 1px solid var(--light);
-  outline: none;
-}
-
-#fullUpdate,
-#openModLabel {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  margin-bottom: 1%;
-  padding: 1%;
-  color: var(--orange);
-  border: 1px solid var(--orange);
-  font-size: 8pt;
-  text-align: center;
-}
-
-#ready,
-#go {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 5%;
-  text-align: center;
-  color: var(--orange);
-  border: 1px solid var(--orange);
-}
-
-#ready {
-  display: none;
-  border: none;
+.headerGreen {
   color: var(--green);
 }
 
-#fullUpdate:hover,
-#go:hover,
-#openModLabel:hover {
-  color: var(--light);
-  border: 1px solid var(--light);
+.selected,
+.go,
+.button,
+.input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+  padding: 5px;
+  border: 1px solid var(--orange);
+  background-color: inherit;
+  outline: none;
 }
 
-#modPath:focus {
-  color: var(--orange);
-  border: 1px solid var(--orange);
+.go {
+  padding: 20px;
+}
+
+.selected {
+  color: var(--dark);
+  background-color: var(--orange);
+}
+
+.footer {
+  font-size: 12px;
+  position: absolute;
+  bottom: 10px;
+}
+
+.footer:hover {
+  color: var(--light);
+}
+
+.selected:hover,
+.button:hover {
+  border: 1px solid var(--light);
+  color: var(--light);
 }

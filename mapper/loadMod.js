@@ -1,27 +1,27 @@
+$(document).on('click', '.footer', function () {
+  shell.openExternal('https://vk.com/besedka_fermera');
+});
+
 $(document).on('click', '#fullUpdate', function () {
   if (fullUpdate) {
-    $('#fullUpdate').css('color', '#fea71c');
-    $('#fullUpdate').css('border-color', '#fea71c');
-    $('#fullUpdate').css('background-color', '#1c1c1c');
     fullUpdate = false;
+    $(this).attr('class', 'button');
   } else {
-    $('#fullUpdate').css('color', '#1c1c1c');
-    $('#fullUpdate').css('border-color', '#fea71c');
-    $('#fullUpdate').css('background-color', '#fea71c');
+    $(this).attr('class', 'selected');
     fullUpdate = true;
   }
-  $('#ready').hide();
+  $('#header').attr('class', 'header');
 });
 
 $(document).on('change', '#openMod', function () {
   if ($(this)[0].files[0] !== undefined) {
     $('#modPath').val($(this)[0].files[0].path.replace('modDesc.xml', ''));
+    $('#header').attr('class', 'header');
   }
-  $('#ready').hide();
 });
 
 $(document).on('click', '#go', function () {
-  $('#ready').hide();
+  $('#header').attr('class', 'header');
   let modPath = $('#modPath').val();
   fs.readFile(modPath + 'modDesc.xml', (err, data) => {
     if (err) throw err;
@@ -106,7 +106,7 @@ $(document).on('click', '#go', function () {
       }),
       (err) => {
         if (err) throw err;
-        $('#ready').show();
+        $('#header').attr('class', 'headerGreen');
       }
     );
   });
