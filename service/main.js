@@ -6,11 +6,14 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 function creteWindow() {
   const win = new BrowserWindow({
     width: 400,
-    height: 300,
+    // minWidth: 400,
+    // maxWidth: 400,
+    height: 500,
+    minHeight: 500,
     icon: iconFile,
-    resizable: false,
+    // resizable: false,
     webPreferences: {
-      devTools: false,
+      // devTools: false,
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.join(__dirname, 'preload.js'),
