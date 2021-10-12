@@ -6,28 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>I3D MAPPER</title>
     <link rel="stylesheet" href="mainStyle.css" />
-    <script>
-      window.$ = window.jQuery = require('../service/jquery-3.6.0.min.js');
-      const fs = require('fs');
-      const parser = new DOMParser();
-      const s = new XMLSerializer();
-      const { create } = require('xmlbuilder2');
-      const shell = require('electron').shell;
-      var fullUpdate = false;
-    </script>
-    <script src="../mapper/loadMod.js"></script>
   </head>
-
   <body>
     <div id="mainContent">
       <div id="header" class="header">&lt;i3dMappings/&gt;</div>
       <input type="text" id="modPath" class="input" disabled placeholder="Путь к папке с модом" />
-      <label for="openMod" class="button">Выбрать modDesc.xml</label>
-      <input type="file" id="openMod" accept=".xml" style="display: none" />
-      <div id="fullUpdate" class="button">Обновить имена объектов</div>
+      <label for="openMod" class="btn">Выбрать modDesc.xml</label>
+      <input type="file" id="openMod" accept=".xml" onchange="loadMod()" style="display: none" />
+      <div id="fullUpdate" class="btn">Обновить имена объектов</div>
       <div id="filesList"></div>
-      <div id="go" class="button go">ПОЕХАЛИ!</div>
-      <div class="footer"><span class="copyright">© "Беседка Фермера", 2021 год. </span><span class="support"> Поддержать проект</span></div>
+      <div id="go" class="btn go" onclick="go()">ПОЕХАЛИ!</div>
+      <div class="footer"><span class="foo copyright" onclick="copyright()">© "Беседка Фермера", 2021 год. </span><span class="foo support" onclick="support()"> Поддержать проект</span></div>
     </div>
+    <script src="../mapper/mapper.js"></script>
   </body>
 </html>

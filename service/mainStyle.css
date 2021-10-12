@@ -15,96 +15,68 @@
   display: none;
 }
 
+* {
+  box-sizing: border-box;
+  text-align: center;
+  font-family: var(--font);
+  cursor: default;
+  color: var(--orange);
+  user-select: none;
+}
+
 body {
   margin: 0;
   padding: 10px;
   background-color: var(--dark);
-  color: var(--orange);
-  font-family: var(--font);
-  cursor: default;
-  text-align: center;
-  -webkit-user-select: none;
-  -webkit-app-region: drag;
 }
 
-.headerGreen,
 .header {
-  box-sizing: border-box;
   width: 100%;
-  margin-bottom: 10px;
-  font-size: 40px;
+  font-size: 30pt;
+  margin: 20px 0;
 }
 
-.headerGreen {
-  color: var(--green);
-}
-
-.selected,
-.go,
-.button,
 .input {
-  box-sizing: border-box;
-  display: block;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  padding: 5px;
+  background: none;
+  color: var(--light);
+  border: 1px solid var(--orange);
+}
+
+.btn {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 4px;
   padding: 5px;
   border: 1px solid var(--orange);
-  background-color: inherit;
-  outline: none;
 }
 
-.go {
-  padding: 20px;
-}
-
-.selected {
-  color: var(--dark);
-  background-color: var(--orange);
-}
-
-.footer {
-  font-size: 11px;
-  position: absolute;
-  bottom: 10px;
-  text-align: center;
-}
-
-#filesList {
-  box-sizing: border-box;
-  margin-bottom: 3px;
-  padding: 10px;
-  display: none;
-}
-
-.completeItem,
-.selectedItem,
-.unselectedItem {
-  box-sizing: border-box;
+.item {
+  width: 90%;
   padding: 2px;
-  margin-bottom: 2px;
   font-size: 10pt;
-  border: 1px solid var(--orange);
 }
 
 .selectedItem {
-  background-color: var(--orange);
-  color: var(--dark);
+  border-color: var(--green);
+  color: var(--green);
 }
 
-.completeItem {
-  background-color: var(--green);
-  color: var(--dark);
-  border: 1px solid var(--green);
+.go {
+  padding: 15px;
 }
 
-.fileItem:hover,
-.selected:hover,
-.button:hover {
-  border: 1px solid var(--light);
+.footer {
+  font-size: 8pt;
+}
+
+.foo:hover {
   color: var(--light);
 }
 
-.copyright:hover,
-.support:hover {
+.btn:hover {
   color: var(--light);
+  border-color: var(--light);
 }
