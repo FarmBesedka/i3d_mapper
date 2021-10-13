@@ -3,8 +3,9 @@ const { shell } = require('electron')
 const { normalize, join, dirname, basename } = require('path')
 const xml2js = require('xml2js')
 
-const parser = new xml2js.Parser()
+const parser = new xml2js.Parser({ explicitChildren: true, preserveChildrenOrder: true })
 const builder = new xml2js.Builder({
+  charkey: '#',
   xmldec: { version: '1.0', encoding: 'UTF-8', standalone: false },
 })
 
@@ -46,28 +47,20 @@ const go = () => {
   let modPath = dirname(document.getElementById('openMod').files[0].path)
   for (let i = 0; i < items.length; i++) {
     if (items[i].getAttribute('data-updateState') === 'true') {
-      let xmlPath = normalize(
-        join(modPath, items[i].getAttribute('data-xmlFilename'))
-      )
+      let xmlPath = normalize(join(modPath, items[i].getAttribute('data-xmlFilename')))
       readFile(xmlPath, (err, xmlData) => {
         if (err) throw err
         parser.parseString(xmlData.toString(), (err, xmlRes) => {
           if (err) throw err
-          let i3dPath = normalize(
-            join(modPath, xmlRes.vehicle.base[0].filename[0])
-          )
+          let i3dPath = normalize(join(modPath, xmlRes.vehicle.base[0].filename[0]))
           readFile(i3dPath, (err, i3dData) => {
             if (err) throw err
-            parser.parseString(i3dData.toString(), (err, i3dRes) => {
+            parser.parseString(i3dData.toString(), function (err, i3dRes) {
               if (err) throw err
               let obj = {
                 i3dMappings: [],
               }
-              i3dRes.i3D.Scene.map((el) => {
-                for (key in el) {
-                  getI3DMapping(el[key], '', obj)
-                }
-              })
+              getI3DMapping(i3dRes.i3D.Scene[0].$$, '', obj)
               obj.i3dMappings.map((el) => {
                 let duplicates = []
                 for (key in el) {
@@ -81,18 +74,17 @@ const go = () => {
                 }
                 if (duplicates.length > 1) {
                   duplicates.map((d, i) => {
-                    obj.i3dMappings[
-                      duplicates[i][0]
-                    ].i3dMapping.$.id = `${duplicates[i][1]}_${i}`
+                    obj.i3dMappings[duplicates[i][0]].i3dMapping.$.id = `${duplicates[i][1]}_${i}`
                   })
                 }
               })
-              delete xmlRes.vehicle.i3dMappings
-              xmlRes.vehicle['i3dMappings'] = [obj.i3dMappings]
-              let newXML = builder.buildObject(xmlRes)
-              writeFile(normalize(xmlPath), newXML, (err) => {
-                if (err) throw err
-              })
+              // xmlRes.vehicle.i3dMappings = [obj.i3dMappings]
+              console.log(xmlRes.vehicle.storeData[0].brand)
+              let newXML = builder.buildObject(xmlRes.vehicle.storeData[0].brand)
+              // console.log(newXML)
+              // writeFile(normalize(xmlPath), newXML, (err) => {
+              //   if (err) throw err
+              // })
             })
           })
         })
@@ -103,23 +95,19 @@ const go = () => {
 
 const getI3DMapping = (node, startIndex, obj) => {
   node.map((el, index) => {
-    for (key in el) {
-      let idx = `${startIndex}|${index}`
-        .replace(/^\|(\d{1,2})/g, '$1>')
-        .replace(/>\|/g, '>')
-      if (key === '$') {
-        obj.i3dMappings.push({
-          i3dMapping: { $: { id: el[key].name, node: idx } },
-        })
-      } else {
-        getI3DMapping(el[key], idx, obj)
-      }
-    }
+    let idx = `${startIndex}|${index}`.replace(/^\|(\d{1,2})/g, '$1>').replace(/>\|/g, '>')
+    obj.i3dMappings.push({
+      i3dMapping: { $: { id: el.$.name, node: idx } },
+    })
+    if (el.$$) getI3DMapping(el.$$, idx, obj)
   })
 }
 
 const index2id = (xml, mapping) => {
-  console.log(xml, mapping)
+  mapping.i3dMappings.map((el) => {
+    xml = xml.replaceAll(`"${el.i3dMapping.$.node}"`, `"${el.i3dMapping.$.id}"`)
+    console.log(xml)
+  })
 }
 
 const copyright = () => {
