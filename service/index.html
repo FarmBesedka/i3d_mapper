@@ -9,14 +9,16 @@
   </head>
   <body>
     <div id="mainContent">
-      <!-- <div id="header" class="header">&lt;i3dMappings/&gt;</div> -->
-      <!-- <input type="text" id="modPath" class="input" disabled placeholder="Путь к папке с модом" /> -->
       <label for="openMod" id="labelMod" class="btn">Выбрать modDesc.xml</label>
       <input type="file" id="openMod" accept=".xml" onchange="loadMod()" style="display: none" />
-      <div id="filesList"></div>
-      <div id="go" class="btn go" onclick="go()" style="display: none">ПОЕХАЛИ!</div>
-      <div class="footer"><span class="foo copyright" onclick="copyright()">© "Беседка Фермера", 2021 год. </span><span class="foo support" onclick="support()"> Поддержать проект</span></div>
+      <div id="buttons" style="display: none">
+        <div id="filesList"></div>
+        <hr />
+        <div id="act" class="btn btnAct" data-actState="true">ДОБАВИТЬ I3D MAPPINGS</div>
+        <div id="go" class="btn go" onclick="go()">ПОЕХАЛИ!</div>
+      </div>
+      <div class="footer"><span class="foo copyright" onclick="goToLink('https:\/\/vk.com/besedka_fermera')">© "Беседка Фермера", 2021 год. </span><span class="foo support" onclick="goToLink('https:\/\/www.donationalerts.com/r/besedka_fermera')"> Поддержать проект</span></div>
     </div>
-    <script src="../mapper/mapper.js"></script>
+    <script src="mapper.js"></script>
   </body>
 </html>

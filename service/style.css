@@ -30,13 +30,20 @@ body {
   background-color: var(--dark);
 }
 
+hr {
+  width: 90%;
+  height: 1px;
+  border: none;
+  background-color: rgba(229, 229, 229, 0.2);
+}
+
 .btn {
   display: block;
   margin-bottom: 3px;
   padding: 8px;
   background-color: rgba(229, 229, 229, 0.2);
-  border-left: 2px solid var(--light);
-  border-right: 2px solid var(--light);
+  /* border-left: 2px solid var(--light); */
+  /* border-right: 2px solid var(--light); */
 }
 
 .btnGreen {
@@ -54,6 +61,17 @@ body {
 .selItem {
   color: var(--green);
   border-color: var(--green);
+}
+
+.btnAct {
+  width: 80%;
+  margin: 5px auto;
+  padding: 4px;
+  font-size: 10px;
+  /* border-left: none; */
+  /* border-right: none; */
+  /* border-top: 1px solid var(--light); */
+  /* border-bottom: 1px solid var(--light); */
 }
 
 .go {

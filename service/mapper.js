@@ -15,7 +15,6 @@ const loadMod = () => {
       let go = document.getElementById('go')
       go.innerText = 'ПОЕХАЛИ!'
       go.className = 'btn go'
-      go.style = 'display:block'
       res.modDesc.storeItems[0].storeItem.forEach((el) => {
         let itemDiv = document.createElement('div')
         itemDiv.innerText = basename(el.$.xmlFilename)
@@ -25,7 +24,7 @@ const loadMod = () => {
         document.getElementById('filesList').append(itemDiv)
         itemDiv.addEventListener('click', (e) => {
           let updateState = e.path[0].getAttribute('data-updateState')
-          if (updateState === 'false') {
+          if (updateState == 'false') {
             updateState = true
             e.path[0].className = 'btn item selItem'
           } else {
@@ -37,8 +36,20 @@ const loadMod = () => {
           go.innerText = 'ПОЕХАЛИ!'
         })
       })
+      document.getElementById('act').addEventListener('click', (e) => {
+        let actState = e.path[0].getAttribute('data-actState')
+        if (actState == 'false') {
+          actState = true
+          e.path[0].innerText = 'ДОБАВИТЬ I3D MAPPINGS'
+        } else {
+          actState = false
+          e.path[0].innerText = 'УДАЛИТЬ I3D MAPPINGS'
+        }
+        e.path[0].setAttribute('data-actState', actState)
+      })
     })
   })
+  document.getElementById('buttons').style = 'display: block'
 }
 const go = () => {
   let items = document.getElementsByClassName('item')
@@ -113,9 +124,6 @@ const index2id = (xml, mapping) => {
   })
   return xml
 }
-const copyright = () => {
-  shell.openExternal('https://vk.com/besedka_fermera')
-}
-const support = () => {
-  shell.openExternal('https://www.donationalerts.com/r/besedka_fermera')
+const goToLink = (link) => {
+  shell.openExternal(link)
 }
