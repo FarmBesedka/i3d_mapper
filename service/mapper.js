@@ -63,41 +63,57 @@ const go = () => {
         if (err) throw err
         xml2js.parseString(xmlData.toString(), (err, xmlRes) => {
           if (err) throw err
-          let i3dPath = normalize(join(modPath, xmlRes.vehicle.base[0].filename[0]))
-          readFile(i3dPath, (err, i3dData) => {
-            if (err) throw err
-            xml2js.parseString(i3dData.toString(), { explicitChildren: true, preserveChildrenOrder: true }, (err, i3dRes) => {
+          if (document.getElementById('act').getAttribute('data-actState') == 'true') {
+            let i3dPath = normalize(join(modPath, xmlRes.vehicle.base[0].filename[0]))
+            readFile(i3dPath, (err, i3dData) => {
               if (err) throw err
-              let obj = {
-                i3dMappings: [],
-              }
-              getI3DMapping(i3dRes.i3D.Scene[0].$$, '', obj)
-              obj.i3dMappings.map((el) => {
-                let duplicates = []
-                for (key in el) {
-                  obj.i3dMappings.map((e, i) => {
-                    for (k in e) {
-                      if (e[k].$.id === el[key].$.id) {
-                        duplicates.push([i, e[k].$.id])
+              xml2js.parseString(i3dData.toString(), { explicitChildren: true, preserveChildrenOrder: true }, (err, i3dRes) => {
+                if (err) throw err
+                let obj = {
+                  i3dMappings: [],
+                }
+                getI3DMapping(i3dRes.i3D.Scene[0].$$, '', obj)
+                obj.i3dMappings.map((el) => {
+                  let duplicates = []
+                  for (key in el) {
+                    obj.i3dMappings.map((e, i) => {
+                      for (k in e) {
+                        if (e[k].$.id === el[key].$.id) {
+                          duplicates.push([i, e[k].$.id])
+                        }
                       }
-                    }
-                  })
-                }
-                if (duplicates.length > 1) {
-                  duplicates.map((d, i) => {
-                    obj.i3dMappings[duplicates[i][0]].i3dMapping.$.id = `${duplicates[i][1]}_${i}`
-                  })
-                }
+                    })
+                  }
+                  if (duplicates.length > 1) {
+                    duplicates.map((d, i) => {
+                      obj.i3dMappings[duplicates[i][0]].i3dMapping.$.id = `${duplicates[i][1]}_${i}`
+                    })
+                  }
+                })
+                delete xmlRes.vehicle.i3dMappings
+                newXML = index2id(xmlData.toString(), obj)
+                writeFile(normalize(xmlPath), newXML, (err) => {
+                  if (err) throw err
+                  go.innerText = 'ГОТОВО!'
+                  go.className = 'btn btnGreen go'
+                })
               })
-              delete xmlRes.vehicle.i3dMappings
-              newXML = index2id(xmlRes, obj)
-              writeFile(normalize(xmlPath), newXML, (err) => {
+            })
+          } else {
+            xmlRes.vehicle.i3dMappings[0].i3dMapping.map((el) => {
+              xmlData = xmlData.toString().replaceAll(`"${el.$.id}"`, `"${el.$.node}"`)
+            })
+            xml2js.parseString(xmlData, (err, xmlOut) => {
+              if (err) throw err
+              delete xmlOut.vehicle.i3dMappings
+              xmlOut = builder.buildObject(xmlOut)
+              writeFile(normalize(xmlPath), xmlOut, (err) => {
                 if (err) throw err
                 go.innerText = 'ГОТОВО!'
                 go.className = 'btn btnGreen go'
               })
             })
-          })
+          }
         })
       })
     }
@@ -113,7 +129,6 @@ const getI3DMapping = (node, startIndex, obj) => {
   })
 }
 const index2id = (xml, mapping) => {
-  xml = builder.buildObject(xml)
   mapping.i3dMappings.map((el) => {
     xml = xml.replaceAll(`"${el.i3dMapping.$.node}"`, `"${el.i3dMapping.$.id}"`)
   })

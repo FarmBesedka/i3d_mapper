@@ -5,13 +5,13 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 function creteWindow() {
   const win = new BrowserWindow({
     width: 400,
-    // minWidth: 400,
-    // maxWidth: 400,
+    minWidth: 400,
+    maxWidth: 400,
     height: 500,
     minHeight: 500,
     icon: iconFile,
     webPreferences: {
-      // devTools: false,
+      devTools: false,
       nodeIntegration: true,
       contextIsolation: false,
     },

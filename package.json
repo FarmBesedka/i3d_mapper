@@ -1,6 +1,6 @@
 {
   "name": "i3d_mapper",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "description": "Приложение создает i3dMappings для Farming Simulator 19",
   "author": "Беседка фермера",
   "main": "./service/main.js",
