@@ -5,16 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>I3D MAPPER</title>
-    <link rel="stylesheet" href="mainStyle.css" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="mainContent">
-      <div id="header" class="header">&lt;i3dMappings/&gt;</div>
-      <input type="text" id="modPath" class="input" disabled placeholder="Путь к папке с модом" />
-      <label for="openMod" class="btn">Выбрать modDesc.xml</label>
+      <!-- <div id="header" class="header">&lt;i3dMappings/&gt;</div> -->
+      <!-- <input type="text" id="modPath" class="input" disabled placeholder="Путь к папке с модом" /> -->
+      <label for="openMod" id="labelMod" class="btn">Выбрать modDesc.xml</label>
       <input type="file" id="openMod" accept=".xml" onchange="loadMod()" style="display: none" />
       <div id="filesList"></div>
-      <div id="go" class="btn go" onclick="go()">ПОЕХАЛИ!</div>
+      <div id="go" class="btn go" onclick="go()" style="display: none">ПОЕХАЛИ!</div>
       <div class="footer"><span class="foo copyright" onclick="copyright()">© "Беседка Фермера", 2021 год. </span><span class="foo support" onclick="support()"> Поддержать проект</span></div>
     </div>
     <script src="../mapper/mapper.js"></script>

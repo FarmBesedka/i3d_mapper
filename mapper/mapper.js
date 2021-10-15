@@ -1,23 +1,21 @@
 const { readFile, writeFile } = require('fs')
 const { shell } = require('electron')
-const { normalize, join, dirname, basename } = require('path')
+const { normalize, join, dirname, basename, sep } = require('path')
 const xml2js = require('xml2js')
-
-const parser = new xml2js.Parser({ explicitChildren: true, preserveChildrenOrder: true })
-const builder = new xml2js.Builder({
-  charkey: '#',
-  xmldec: { version: '1.0', encoding: 'UTF-8', standalone: false },
-})
-
+const builder = new xml2js.Builder({ xmldec: { version: '1.0', encoding: 'UTF-8', standalone: false } })
 const loadMod = () => {
   if (!document.getElementById('openMod').files[0]) return false
   document.getElementById('filesList').innerHTML = ''
   let modDescPath = document.getElementById('openMod').files[0].path
-  document.getElementById('modPath').value = dirname(modDescPath)
+  document.getElementById('labelMod').innerText = dirname(modDescPath).split(sep).pop()
   readFile(modDescPath, (err, data) => {
     if (err) throw err
-    parser.parseString(data.toString(), (err, res) => {
+    xml2js.parseString(data.toString(), (err, res) => {
       if (err) throw err
+      let go = document.getElementById('go')
+      go.innerText = 'ПОЕХАЛИ!'
+      go.className = 'btn go'
+      go.style = 'display:block'
       res.modDesc.storeItems[0].storeItem.forEach((el) => {
         let itemDiv = document.createElement('div')
         itemDiv.innerText = basename(el.$.xmlFilename)
@@ -29,20 +27,22 @@ const loadMod = () => {
           let updateState = e.path[0].getAttribute('data-updateState')
           if (updateState === 'false') {
             updateState = true
-            e.path[0].className = 'btn item selectedItem'
+            e.path[0].className = 'btn item selItem'
           } else {
             updateState = false
             e.path[0].className = 'btn item'
           }
           e.path[0].setAttribute('data-updateState', updateState)
+          go.className = 'btn go'
+          go.innerText = 'ПОЕХАЛИ!'
         })
       })
     })
   })
 }
-
 const go = () => {
   let items = document.getElementsByClassName('item')
+  let go = document.getElementById('go')
   if (!items.length) return false
   let modPath = dirname(document.getElementById('openMod').files[0].path)
   for (let i = 0; i < items.length; i++) {
@@ -50,12 +50,12 @@ const go = () => {
       let xmlPath = normalize(join(modPath, items[i].getAttribute('data-xmlFilename')))
       readFile(xmlPath, (err, xmlData) => {
         if (err) throw err
-        parser.parseString(xmlData.toString(), (err, xmlRes) => {
+        xml2js.parseString(xmlData.toString(), (err, xmlRes) => {
           if (err) throw err
           let i3dPath = normalize(join(modPath, xmlRes.vehicle.base[0].filename[0]))
           readFile(i3dPath, (err, i3dData) => {
             if (err) throw err
-            parser.parseString(i3dData.toString(), function (err, i3dRes) {
+            xml2js.parseString(i3dData.toString(), { explicitChildren: true, preserveChildrenOrder: true }, (err, i3dRes) => {
               if (err) throw err
               let obj = {
                 i3dMappings: [],
@@ -78,13 +78,13 @@ const go = () => {
                   })
                 }
               })
-              // xmlRes.vehicle.i3dMappings = [obj.i3dMappings]
-              console.log(xmlRes.vehicle.storeData[0].brand)
-              let newXML = builder.buildObject(xmlRes.vehicle.storeData[0].brand)
-              // console.log(newXML)
-              // writeFile(normalize(xmlPath), newXML, (err) => {
-              //   if (err) throw err
-              // })
+              delete xmlRes.vehicle.i3dMappings
+              newXML = index2id(xmlRes, obj)
+              writeFile(normalize(xmlPath), newXML, (err) => {
+                if (err) throw err
+                go.innerText = 'ГОТОВО!'
+                go.className = 'btn btnGreen go'
+              })
             })
           })
         })
@@ -92,7 +92,6 @@ const go = () => {
     }
   }
 }
-
 const getI3DMapping = (node, startIndex, obj) => {
   node.map((el, index) => {
     let idx = `${startIndex}|${index}`.replace(/^\|(\d{1,2})/g, '$1>').replace(/>\|/g, '>')
@@ -102,14 +101,18 @@ const getI3DMapping = (node, startIndex, obj) => {
     if (el.$$) getI3DMapping(el.$$, idx, obj)
   })
 }
-
 const index2id = (xml, mapping) => {
+  xml = builder.buildObject(xml)
   mapping.i3dMappings.map((el) => {
     xml = xml.replaceAll(`"${el.i3dMapping.$.node}"`, `"${el.i3dMapping.$.id}"`)
-    console.log(xml)
   })
+  xml2js.parseString(xml, (err, res) => {
+    if (err) throw err
+    res.vehicle.i3dMappings = [mapping.i3dMappings]
+    xml = builder.buildObject(res)
+  })
+  return xml
 }
-
 const copyright = () => {
   shell.openExternal('https://vk.com/besedka_fermera')
 }
