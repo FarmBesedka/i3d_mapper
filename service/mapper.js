@@ -1,8 +1,20 @@
 const { readFile, writeFile } = require('fs')
-const { shell } = require('electron')
+const { shell, clipboard } = require('electron')
 const { normalize, join, dirname, basename, sep } = require('path')
 const xml2js = require('xml2js')
 const builder = new xml2js.Builder({ xmldec: { version: '1.0', encoding: 'UTF-8', standalone: false } })
+const copyMapping = () => {
+  let copyItem = document.getElementById('copy')
+  let copyState = copyItem.getAttribute('data-copyState')
+  if (copyState === 'true') {
+    copyItem.setAttribute('data-copyState', 'false')
+    copyItem.className = 'btn btnAct'
+  } else {
+    copyItem.setAttribute('data-copyState', 'true')
+    copyItem.className = 'btn btnAct selItem'
+  }
+  changeItem(document.getElementById('go'), 'btn go', 'ПОЕХАЛИ!')
+}
 const loadMod = () => {
   if (!document.getElementById('openMod').files[0]) return false
   document.getElementById('filesList').innerHTML = ''
@@ -13,8 +25,7 @@ const loadMod = () => {
     xml2js.parseString(data.toString(), (err, res) => {
       if (err) throw err
       let go = document.getElementById('go')
-      go.innerText = 'ПОЕХАЛИ!'
-      go.className = 'btn go'
+      changeItem(go, 'btn go', 'ПОЕХАЛИ!')
       res.modDesc.storeItems[0].storeItem.forEach((el) => {
         let itemDiv = document.createElement('div')
         itemDiv.innerText = basename(el.$.xmlFilename)
@@ -32,8 +43,7 @@ const loadMod = () => {
             e.path[0].className = 'btn item'
           }
           e.path[0].setAttribute('data-updateState', updateState)
-          go.className = 'btn go'
-          go.innerText = 'ПОЕХАЛИ!'
+          changeItem(go, 'btn go', 'ПОЕХАЛИ!')
         })
       })
       document.getElementById('act').addEventListener('click', (e) => {
@@ -46,24 +56,33 @@ const loadMod = () => {
           e.path[0].innerText = 'УДАЛИТЬ I3D MAPPINGS'
         }
         e.path[0].setAttribute('data-actState', actState)
+        changeItem(go, 'btn go', 'ПОЕХАЛИ!')
       })
     })
   })
   document.getElementById('buttons').style = 'display: block'
 }
 const go = () => {
-  let items = document.getElementsByClassName('item')
+  let items = Array.from(document.getElementsByClassName('item'))
+  let updateCount = 0
+  items.map((el) => {
+    if (el.getAttribute('data-updateState') === 'true') updateCount++
+  })
+  if (updateCount > 1 && document.getElementById('copy').getAttribute('data-copyState') === 'true') {
+    alert('Копировать <i3dMappings/> можно только из одного файла за один раз')
+    return false
+  }
   let go = document.getElementById('go')
   if (!items.length) return false
   let modPath = dirname(document.getElementById('openMod').files[0].path)
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].getAttribute('data-updateState') === 'true') {
-      let xmlPath = normalize(join(modPath, items[i].getAttribute('data-xmlFilename')))
+  items.map((el) => {
+    if (el.getAttribute('data-updateState') === 'true') {
+      let xmlPath = normalize(join(modPath, el.getAttribute('data-xmlFilename')))
       readFile(xmlPath, (err, xmlData) => {
         if (err) throw err
         xml2js.parseString(xmlData.toString(), (err, xmlRes) => {
           if (err) throw err
-          if (document.getElementById('act').getAttribute('data-actState') == 'true') {
+          if (document.getElementById('act').getAttribute('data-actState') === 'true') {
             let i3dPath = normalize(join(modPath, xmlRes.vehicle.base[0].filename[0]))
             readFile(i3dPath, (err, i3dData) => {
               if (err) throw err
@@ -90,16 +109,24 @@ const go = () => {
                     })
                   }
                 })
-                delete xmlRes.vehicle.i3dMappings
-                newXML = index2id(xmlData.toString(), obj)
-                writeFile(normalize(xmlPath), newXML, (err) => {
-                  if (err) throw err
-                  go.innerText = 'ГОТОВО!'
-                  go.className = 'btn btnGreen go'
-                })
+                if (document.getElementById('copy').getAttribute('data-copyState') === 'true') {
+                  clipboard.writeText(builder.buildObject(obj).replace(/<?.+\n/, ''))
+                  changeItem(go, 'btn btnGreen go', 'ГОТОВО!')
+                } else {
+                  delete xmlRes.vehicle.i3dMappings
+                  newXML = index2id(xmlData.toString(), obj)
+                  writeFile(normalize(xmlPath), newXML, (err) => {
+                    if (err) throw err
+                    changeItem(go, 'btn btnGreen go', 'ГОТОВО!')
+                  })
+                }
               })
             })
           } else {
+            if (!xmlRes.vehicle.i3dMappings) {
+              alert(`Элемент <i3dMappings/> не найден в файле "${xmlPath}"`)
+              return false
+            }
             xmlRes.vehicle.i3dMappings[0].i3dMapping.map((el) => {
               xmlData = xmlData.toString().replaceAll(`"${el.$.id}"`, `"${el.$.node}"`)
             })
@@ -109,15 +136,14 @@ const go = () => {
               xmlOut = builder.buildObject(xmlOut)
               writeFile(normalize(xmlPath), xmlOut, (err) => {
                 if (err) throw err
-                go.innerText = 'ГОТОВО!'
-                go.className = 'btn btnGreen go'
+                changeItem(go, 'btn btnGreen go', 'ГОТОВО!')
               })
             })
           }
         })
       })
     }
-  }
+  })
 }
 const getI3DMapping = (node, startIndex, obj) => {
   node.map((el, index) => {
@@ -141,4 +167,8 @@ const index2id = (xml, mapping) => {
 }
 const goToLink = (link) => {
   shell.openExternal(link)
+}
+const changeItem = (item, itemClass, itemText) => {
+  item.innerText = itemText
+  item.className = itemClass
 }
